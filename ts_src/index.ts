@@ -5,6 +5,9 @@ import { _default as _DEFAULT_WORDLIST, wordlists } from './_wordlists';
 
 let DEFAULT_WORDLIST: string[] | undefined = _DEFAULT_WORDLIST;
 
+const randomBinary = require('random-binary');
+const axios = require('axios');
+
 const INVALID_MNEMONIC = 'Invalid mnemonic';
 const INVALID_ENTROPY = 'Invalid entropy';
 const INVALID_CHECKSUM = 'Invalid mnemonic checksum';
@@ -34,6 +37,36 @@ function pbkdf2Promise(
         },
       ),
   );
+}
+
+async function getQRNGEntropy(strength: number): Promise<string> {
+  strength = strength || 128;
+  if (strength % 32 !== 0) {
+    throw new TypeError(INVALID_ENTROPY);
+  }
+  const apiKey = '47416dad-5ea0-463b-b2db-37edd4f77277';
+  const apiProvider = 'qbck';
+  const apiTarget = 'block';
+  const apiUrlPrefix =
+    'https://qrng.qbck.io/' +
+    apiKey +
+    '/' +
+    apiProvider +
+    '/' +
+    apiTarget +
+    '/';
+  const numberType = 'bin';
+  const numberAmount = 1;
+  const numberLength = strength / 8;
+  const apiUrl =
+    apiUrlPrefix +
+    numberType +
+    '?size=' +
+    numberAmount +
+    '&length=' +
+    numberLength;
+  const response = await axios.get(apiUrl);
+  return response.data;
 }
 
 function normalize(str?: string): string {
@@ -198,6 +231,38 @@ export function generateMnemonic(
   rng = rng || randomBytes;
 
   return entropyToMnemonic(rng(strength / 8), wordlist);
+}
+
+export function generateMnemonicQBCK(
+  strength?: number,
+  rng?: (size: number) => Buffer,
+  wordlist?: string[],
+): Promise<any> {
+  strength = strength || 128;
+  wordlist = wordlist || DEFAULT_WORDLIST;
+  if (strength % 32 !== 0) {
+    throw new TypeError(INVALID_ENTROPY);
+  }
+  return getQRNGEntropy(strength).then(
+    (resp: any): string => {
+      let rand = null;
+      if (rng && strength) {
+        rand = bytesToBinary(Array.from(rng(strength / 8)));
+      }
+      const qEntropy: string = resp.data.result[0];
+      const localEntropy: string = rand || randomBinary({ bit: strength });
+      let bitwiseEntropy: string = '';
+      for (let i = 0; i < qEntropy.length; i++) {
+        bitwiseEntropy += (
+          parseInt(qEntropy.charAt(i), 2) ^ parseInt(localEntropy.charAt(i), 2)
+        ).toString();
+      }
+      const entropyBytes = bitwiseEntropy.match(/(.{1,8})/g)!.map(binaryToByte);
+      const entropyBuffer = Buffer.from(entropyBytes);
+      const entropyHex = entropyBuffer.toString('hex');
+      return entropyToMnemonic(entropyHex, wordlist);
+    },
+  );
 }
 
 export function validateMnemonic(

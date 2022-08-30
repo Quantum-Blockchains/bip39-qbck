@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitcoinjs/bip39.git"
+    "url": "https://github.com/Quantum-Blockchains/bip39-qbck"
   },
   "license": "ISC",
   "files": [
@@ -36,15 +36,17 @@
   ],
   "dependencies": {
     "@types/node": "11.11.6",
+    "axios": "^0.27.2",
     "create-hash": "^1.1.0",
     "pbkdf2": "^3.0.9",
+    "random-binary": "^1.0.3",
     "randombytes": "^2.0.1"
   },
   "devDependencies": {
     "@types/create-hash": "1.2.0",
     "@types/pbkdf2": "3.0.0",
     "@types/randombytes": "2.0.0",
-    "node-fetch": "^3.1.1",
+    "node-fetch": "^2.6.7",
     "nyc": "^15.0.0",
     "prettier": "1.16.4",
     "proxyquire": "^1.7.10",

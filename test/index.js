@@ -112,6 +112,28 @@ test('generateMnemonic can vary entropy length', function (t) {
   t.equal(words.length, 15, 'can vary generated entropy bit length')
 })
 
+test('generateMnemonicQBCK can vary entropy length', function (t) {
+  bip39.generateMnemonicQBCK(160).then(response => {
+    try {
+      t.plan(1)
+      t.equal(response.split(' ').length, 15, 'can vary generated entropy bit length') 
+    } catch (error) {
+      console.log(error);
+    }
+  })
+})
+
+test('generateMnemonicQBCK fetching successful', function (t) {
+  bip39.generateMnemonicQBCK(160).then(response => {
+    try {
+      t.plan(1)
+      t.equal(response.split(' ').length, 15, response) 
+    } catch (error) {
+      console.log(error);
+    }
+  })
+})
+
 test('generateMnemonic requests the exact amount of data from an RNG', function (t) {
   t.plan(1)
 
