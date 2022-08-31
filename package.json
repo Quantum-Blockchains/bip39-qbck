@@ -1,7 +1,7 @@
 {
-  "name": "bip39",
+  "name": "bip39-qbck",
   "version": "3.0.4",
-  "description": "Bitcoin BIP39: Mnemonic code for generating deterministic keys",
+  "description": "Bitcoin BIP39: Mnemonic code for generating deterministic keys with quantum random numbers used for generating entropy.",
   "main": "src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
