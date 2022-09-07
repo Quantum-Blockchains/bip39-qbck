@@ -103,7 +103,7 @@ npm install bip39
 const mnemonic = bip39.generateMnemonic()
 // => 'seed sock milk update focus rotate barely fade car face mechanic mercy'
 
-// Generate a random mnemonic by fetching entropy from https://qrng.qbck.io/ (https://www.quantumblockchains.io/current-services/api/) and combining it by a bitwise XOR with random-binary entropy, defaults to 128-bits of entropy
+// Generate a random mnemonic by fetching entropy from the quantum random number generator: https://qrng.qbck.io/ (https://www.quantumblockchains.io/current-services/api/) and combining it by a bitwise XOR with random-binary entropy, defaults to 128-bits of entropy
 const mnemonic = await bip39.generateMnemonic()
 // => 'laptop voice control valve tackle genre punch scheme oppose kitchen ugly umbrella'
 
